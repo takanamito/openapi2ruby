@@ -1,5 +1,9 @@
 require "openapi2ruby/version"
+require 'openapi2ruby/cli'
+require 'openapi2ruby/parser'
+require 'openapi2ruby/generator'
+require 'openapi2ruby/openapi'
+require 'openapi2ruby/openapi/schema'
+require 'openapi2ruby/openapi/schema/property'
 
-module Openapi2ruby
-  # Your code goes here...
-end
+require 'active_support/core_ext/string/inflections'
