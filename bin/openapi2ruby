@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'openapi2ruby'
+
+Openapi2ruby::Cli.start

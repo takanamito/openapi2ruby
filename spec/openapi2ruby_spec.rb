@@ -1,9 +1,7 @@
-RSpec.describe Openapi2ruby do
-  it "has a version number" do
-    expect(Openapi2ruby::VERSION).not_to be nil
-  end
+require "spec_helper"
 
-  it "does something useful" do
-    expect(false).to eq(true)
+RSpec.describe Openapi2ruby do
+  it 'has a version number' do
+    expect(Openapi2ruby::VERSION).not_to be nil
   end
 end

@@ -1,0 +1,35 @@
+class <%= @schema.name %>Serializer < ActiveModel::Serializer
+  attributes <%= @schema.properties.map{ |p| ":#{p.name}" }.join(', ') -%>
+
+  <%- @schema.properties.select{ |p| p.ref? || p.ref_items? }.each do |p| %>
+  def <%= p.name -%>
+    <%- if p.ref? %>
+    <%= "#{p.ref_class}Serializer.new(object.#{p.ref})" %>
+    <%- else %>
+    ActiveModel::Serializer::CollectionSerializer.new(
+      <%= "object.#{p.name}" -%>,
+      serializer: <%= "#{p.ref_class}" -%>Serializer,
+    )
+    <%- end -%>
+  end
+  <%- end -%>
+
+  <%- @schema.properties.reject{ |p| p.ref? || p.ref_items? }.each do |p| %>
+  def <%= p.name -%>
+    <%- if @schema.required?(p) %>
+    required_check(<%= ":#{p.name}" %>)
+    <%- end %>
+    type_check(<%= ":#{p.name}, #{p.types}" -%>)
+    object.<%=- p.name %>
+  end
+  <%- end %>
+  private
+  <%- unless @schema.requireds.nil? %>
+  def required_check(name)
+    raise "Required field is nil. #{name}" if object.send(name).nil?
+  end
+  <%- end %>
+  def type_check(name, types)
+    raise "Field type is invalid. #{name}" unless types.include?(object.send(name).class)
+  end
+end
