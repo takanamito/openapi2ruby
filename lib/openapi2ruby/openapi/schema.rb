@@ -5,14 +5,20 @@ module Openapi2ruby
       @definition = content[:definition]
     end
 
+    # OpenAPI camelcase schema name
+    # @return [String]
     def name
       @name.camelcase
     end
 
+    # OpenAPI required properties name
+    # @return [Array[String]]
     def requireds
       @definition['required']
     end
 
+    # OpenAPI schema properties
+    # @return [Array[Openapi2ruby::Openapi::Schema]]
     def properties
       return [] if @definition['properties'].nil?
       @definition['properties'].each_with_object([]) do |(key, value), results|
@@ -21,6 +27,9 @@ module Openapi2ruby
       end
     end
 
+    # Whether property is required or not
+    # @param [Openapi2ruby::Openapi::Schema::Property] OpenAPI schema property
+    # @return [Boolean]
     def required?(property)
       return false if requireds.nil?
       requireds.include?(property.name)
