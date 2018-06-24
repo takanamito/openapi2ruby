@@ -1,5 +1,7 @@
 # Openapi2ruby
 
+[![Build Status](https://travis-ci.com/takanamito/openapi2ruby.svg?branch=master)](https://travis-ci.com/takanamito/openapi2ruby)
+
 A library to generate ruby class from openapi.yaml.
 
 ## Installation
@@ -20,7 +22,82 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+You can generate ruby class from openapi.yaml (Now support OpenAPI Specification 3.0 only)
+
+For example, you uses OpenAPI-Specification [link-example schema](https://github.com/OAI/OpenAPI-Specification/blob/master/examples/v3.0/link-example.yaml#L178-L203).
+
+```sh
+# generate ruby class
+$ openapi2ruby generate path/to/link-example.yaml --out ./
+
+$ ls
+pullrequest_serializer.rb repository_serializer.rb  user_serializer.rb
+```
+
+Generated class is below.  
+Default, this gem generates `ActiveModel::Serializer` class.
+
+```ruby
+class RepositorySerializer < ActiveModel::Serializer
+  attributes :slug, :owner
+
+  def owner
+    UserSerializer.new(object.user)
+  end
+
+
+  def slug
+    type_check(:slug, [String])
+    object.slug
+  end
+
+  private
+
+  def type_check(name, types)
+    raise "Field type is invalid. #{name}" unless types.include?(object.send(name).class)
+  end
+end
+```
+
+### Use original template
+
+If you wants to generate from other template with ERB.  
+You can specify it with cli option.
+
+Write original template.
+
+```erb
+class <%= @schema.name %>
+  attr_accessor <%= @schema.properties.map{ |p| ":#{p.name}" }.join(', ') %>
+
+  def intiialize(args)
+    <%- @schema.properties.each do |p| -%>
+    <%= "@#{p.name} = args[:#{p.name}]" %>
+    <%- end -%>
+  end
+end
+```
+
+Generate with `--template` option.
+
+```sh
+$ openapi2ruby generate path/to/link-example.yaml \
+  --template path/to/original_template.rb.erb \
+  --out ./
+```
+
+```ruby
+class Repository
+  attr_accessor :slug, :owner
+
+  def intiialize(args)
+    @slug = args[:slug]
+    @owner = args[:owner]
+  end
+end
+```
+
+For more template value information, please check [default template](https://github.com/takanamito/openapi2ruby/blob/master/lib/openapi2ruby/templates/serializer.rb.erb).
 
 ## Development
 

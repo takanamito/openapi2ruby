@@ -6,6 +6,10 @@ module Openapi2ruby
   class Generator
     TEMPLATE_PATH = File.expand_path('../templates/serializer.rb.erb', __FILE__)
 
+    # Generate ruby class from OpenAPI schema
+    # @param schema [Openapi2ruby::Openapi::Schema] parsed OpenAPI schema
+    # @param output_path [String] parsed OpenAPI YAML
+    # @param template_path [String] original template path
     def self.generate(schema, output_path, template_path)
       new(schema).generate(output_path, template_path)
     end
@@ -14,6 +18,9 @@ module Openapi2ruby
       @schema = schema
     end
 
+    # Generate ruby class from OpenAPI schema
+    # @param output_path [String] parsed OpenAPI YAML
+    # @param template_path [String] original template path
     def generate(output_path, template_path)
       template_path = TEMPLATE_PATH if template_path.nil?
       template = File.read(template_path)

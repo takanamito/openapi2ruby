@@ -4,6 +4,8 @@ module Openapi2ruby
       @content = content
     end
 
+    # Creates OpenAPI Schema array
+    # @return [Array[Openapi2ruby::Openapi::Schema]]
     def schemas
       @content['components']['schemas'].each_with_object([]) do |(key, value), results|
         schema_content = { name: key, definition: value}

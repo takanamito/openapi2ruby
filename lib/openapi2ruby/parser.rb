@@ -2,6 +2,9 @@ require 'yaml'
 
 module Openapi2ruby
   class Parser
+    # Parse openapi.yaml
+    # @param path [String] OpenAPI schema file path
+    # @return [Openapi2ruby::Openapi]
     def self.parse(path)
       new(path).parse
     end
@@ -10,6 +13,8 @@ module Openapi2ruby
       @path = path
     end
 
+    # Parse openapi.yaml
+    # @return [Openapi2ruby::Openapi]
     def parse
       Openapi.new(parse_file)
     end

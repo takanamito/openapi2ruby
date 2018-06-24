@@ -10,23 +10,33 @@ module Openapi2ruby
       @ref = content[:definition]['$ref']
     end
 
+    # OpenAPI schema ref property name
+    # @return [String]
     def ref
       return @items['$ref'].split('/').last if ref_items?
       @ref.split('/').last
     end
 
+    # OpenAPI schema ref property class name
+    # @return [String]
     def ref_class
       ref.camelcase
     end
 
+    # Whether property is ref or not
+    # @return [Boolean]
     def ref?
       !@ref.nil?
     end
 
+    # Whether property has ref array items
+    # @return [Boolean]
     def ref_items?
       @type == 'array' && !@items['$ref'].nil?
     end
 
+    # OpenAPI schema property types
+    # @return [Array[Class]]
     def types
       return [ref] if @type.nil?
       converted_types
@@ -34,6 +44,8 @@ module Openapi2ruby
 
     private
 
+    # OpenAPI schema property types in Ruby
+    # @return [Array[Class]]
     def converted_types
       case @type
       when 'string', 'integer', 'array'
