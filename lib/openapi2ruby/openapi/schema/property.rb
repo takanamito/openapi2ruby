@@ -8,6 +8,14 @@ module Openapi2ruby
       @items = content[:definition]['items']
       @format = content[:definition]['format']
       @ref = content[:definition]['$ref']
+      if content[:definition]['oneOf']
+        @type = 'oneOf'
+        @one_of_refs = content[:definition]['oneOf'].map do |content|
+          content['$ref'].split('/').last
+        end
+      else
+        @one_of_items = []
+      end
     end
 
     # OpenAPI schema ref property name
@@ -38,8 +46,18 @@ module Openapi2ruby
     # OpenAPI schema property types
     # @return [Array[Class]]
     def types
+      return [Hash] if one_of?
       return [ref] if @type.nil?
+
       converted_types
+    end
+
+    def one_of?
+      @type == 'oneOf' && !@one_of_refs.empty?
+    end
+
+    def one_of_refs
+      @one_of_refs
     end
 
     private

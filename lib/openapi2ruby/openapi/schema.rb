@@ -34,5 +34,17 @@ module Openapi2ruby
       return false if requireds.nil?
       requireds.include?(property.name)
     end
+
+    def one_ofs
+      return [] if properties.empty?
+      properties.each_with_object([]) do |value, results|
+        if value.one_of?
+          p value
+          results << value.one_of_refs
+        else
+          results
+        end
+      end
+    end
   end
 end

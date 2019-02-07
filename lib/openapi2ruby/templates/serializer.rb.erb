@@ -20,7 +20,11 @@ class <%= @schema.name %>Serializer < ActiveModel::Serializer
     required_check(<%= ":#{p.name}" %>)
     <%- end %>
     type_check(<%= ":#{p.name}, #{p.types}" -%>)
+    <%- if p.one_of? -%>
+    one_of_<%=- p.name %>(object.<%=- p.name %>)
+    <%- else -%>
     object.<%=- p.name %>
+    <%- end -%>
   end
   <%- end %>
   private
@@ -32,4 +36,16 @@ class <%= @schema.name %>Serializer < ActiveModel::Serializer
   def type_check(name, types)
     raise "Field type is invalid. #{name}" unless types.include?(object.send(name).class)
   end
+  <%- @schema.properties.select{ |p| p.one_of? }.each do |p| %>
+  def one_of_<%=- p.name %>(one_of_value)
+    case one_of_value.class
+    <%- p.one_of_refs.each do |ref| -%>
+    when <%= ref -%> then
+      <%= ref -%>Serializer.new(one_of_value).attributes
+    <%- end -%>
+    else
+      raise "Failed to serialize as one_of ref: #{one_of_value}"
+    end
+  end
+  <%- end -%>
 end
