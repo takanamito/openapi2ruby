@@ -25,11 +25,9 @@ class <%= @schema.name %>Serializer < ActiveModel::Serializer
       <%= ref -%>,
     <%- end -%>
     ])
-
     one_of_<%=- p.name %>(object.<%=- p.name %>)
     <%- else -%>
     type_check(<%= ":#{p.name}, #{p.types}" -%>)
-
     object.<%=- p.name %>
     <%- end -%>
   end

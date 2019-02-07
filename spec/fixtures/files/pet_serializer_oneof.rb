@@ -17,7 +17,10 @@ class PetSerializer < ActiveModel::Serializer
   end
 
   def animal
-    type_check(:animal, [Hash])
+    type_check(:animal, [
+      Cat,
+      Dog,
+    ])
     one_of_animal(object.animal)
   end
 
