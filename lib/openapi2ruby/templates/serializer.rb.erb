@@ -19,10 +19,17 @@ class <%= @schema.name %>Serializer < ActiveModel::Serializer
     <%- if @schema.required?(p) %>
     required_check(<%= ":#{p.name}" %>)
     <%- end %>
-    type_check(<%= ":#{p.name}, #{p.types}" -%>)
     <%- if p.one_of? -%>
+    type_check(<%= ":#{p.name}"-%>, [
+    <%- p.one_of_refs.map do |ref| -%>
+      <%= ref -%>,
+    <%- end -%>
+    ])
+
     one_of_<%=- p.name %>(object.<%=- p.name %>)
     <%- else -%>
+    type_check(<%= ":#{p.name}, #{p.types}" -%>)
+
     object.<%=- p.name %>
     <%- end -%>
   end
@@ -38,7 +45,7 @@ class <%= @schema.name %>Serializer < ActiveModel::Serializer
   end
   <%- @schema.properties.select{ |p| p.one_of? }.each do |p| %>
   def one_of_<%=- p.name %>(one_of_value)
-    case one_of_value.class
+    case one_of_value
     <%- p.one_of_refs.each do |ref| -%>
     when <%= ref -%> then
       <%= ref -%>Serializer.new(one_of_value).attributes

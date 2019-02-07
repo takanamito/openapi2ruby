@@ -37,7 +37,7 @@ class PetSerializer < ActiveModel::Serializer
   end
 
   def one_of_animal(one_of_value)
-    case one_of_value.class
+    case one_of_value
     when Cat then
       CatSerializer.new(one_of_value).attributes
     when Dog then

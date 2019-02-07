@@ -39,7 +39,6 @@ module Openapi2ruby
       return [] if properties.empty?
       properties.each_with_object([]) do |value, results|
         if value.one_of?
-          p value
           results << value.one_of_refs
         else
           results
