@@ -28,6 +28,7 @@ module Openapi2ruby
 
       output_file = Pathname.new(output_path).join("#{@schema.name.underscore}_serializer.rb")
       File.open(output_file.to_s, 'w') { |file| file << generated_class }
+      output_file.to_s
     end
   end
 end
