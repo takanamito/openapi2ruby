@@ -14,7 +14,7 @@ module Openapi2ruby
           content['$ref'].split('/').last
         end
       else
-        @one_of_items = []
+        @one_of_refs = []
       end
     end
 

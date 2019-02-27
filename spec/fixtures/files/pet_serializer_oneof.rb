@@ -40,13 +40,8 @@ class PetSerializer < ActiveModel::Serializer
   end
 
   def one_of_animal(one_of_value)
-    case one_of_value
-    when Cat then
-      CatSerializer.new(one_of_value).attributes
-    when Dog then
-      DogSerializer.new(one_of_value).attributes
-    else
-      raise "Failed to serialize as one_of ref: #{one_of_value}"
-    end
+    serializer = ActiveModelSerializers::SerializableResource.new(one_of_value).serializer
+    raise "Undefined serializer one_of ref: #{one_of_value.class}" if serializer.nil?
+    serializer.new(one_of_value)
   end
 end
