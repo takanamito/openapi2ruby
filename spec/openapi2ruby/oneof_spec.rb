@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'fileutils'
+
 RSpec.describe Openapi2ruby::Generator do
   let(:generator) { Openapi2ruby::Generator.new(schema) }
   let(:schema) { Openapi2ruby::Parser.parse(schema_path).schemas.first }
